@@ -9,17 +9,29 @@ console.log("[CONTENT] Layout-changing content script successfully injected.");
 function changePageDirection(direction) {
     console.log(`[CONTENT] Changing entire page direction to: ${direction}`);
 
-    // document.documentElement refers to the <html> tag.
-    const rootElement = document.documentElement;
-
-    if (direction === 'rtl' || direction === 'ltr') {
-        // Set the 'dir' attribute for the entire document.
-        rootElement.setAttribute('dir', direction);
-    } else { // This handles 'auto' or any other value.
-        // Remove the 'dir' attribute to revert the page to its default state.
-        rootElement.removeAttribute('dir');
+    if (direction === 'rtl') {
+        // If the direction is RTL, we need to add our stylesheet.
+        // But only if it doesn't already exist.
+        if (!existingStyleElement) {
+            const linkElement = document.createElement('link');
+            linkElement.id = styleId;
+            linkElement.rel = 'stylesheet';
+            linkElement.type = 'text/css';
+            linkElement.href = browser.runtime.getURL('rtl-styler.css');
+            
+            document.head.appendChild(linkElement);
+            console.log('[CONTENT] RTL font styler has been added.');
+        }
+    } else {
+        // If the direction is NOT RTL ('ltr'), we should remove our stylesheet.
+        // But only if it exists.
+        if (existingStyleElement) {
+            existingStyleElement.remove();
+            console.log('[CONTENT] RTL font styler has been removed.');
+        }
     }
 }
+
 
 // Listen for messages from the background script.
 browser.runtime.onMessage.addListener((message) => {
