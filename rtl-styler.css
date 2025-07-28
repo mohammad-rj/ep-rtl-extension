@@ -1,0 +1,25 @@
+/*
+    This @font-face rule tells the browser about our new font, "Vazirmatn".
+*/
+@font-face {
+  font-family: 'Vazirmatn';
+  
+  /* 
+    It tells the browser to load the font file from within the extension itself,
+    so it works offline and on every computer.
+  */
+  src: url('chrome-extension://__MSG_@@extension_id__/fonts/Vazirmatn-Regular.woff2') format('woff2');
+  
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap; /* This improves loading performance. */
+}
+
+/*
+  Part 2: Applies the Vazirmatn font 
+  to ALL elements (*) on the page, but ONLY when the main <html> tag 
+  has the attribute dir="rtl".  
+*/
+html[dir="rtl"] * {
+  font-family: 'Vazirmatn', sans-serif !important;
+}
